@@ -1,15 +1,16 @@
-// noinspection JSUnresolvedReference,DuplicatedCode
+// noinspection DuplicatedCode
 
-async function getUser(identifierValue, context, callback) {
+async function login(identifierValue, password, context, callback) {
+
     // noinspection JSUnresolvedReference
     const identifierType = context.identifierType || 'email';
 
-    console.log(`getUser ${identifierType}: ${identifierValue}, context: ${JSON.stringify(context)}`);
+    console.log(`login custom-db ${identifierType}: ${identifierValue}, password: ${password}, context: ${JSON.stringify(context)}`);
 
     const API_TOKEN = configuration.API_TOKEN;
-    const API_URL = `${configuration.API_BASE_URL}/find/${identifierType}`;
+    const API_URL = `${configuration.API_BASE_URL}/login`;
 
-    //console.log(`getUser URL: ${API_URL}, token: ${API_TOKEN}`);
+    console.log(`login URL: ${API_URL}, token: ${API_TOKEN}`);
 
     const headers = {
         'Content-Type': 'application/json',
@@ -17,13 +18,18 @@ async function getUser(identifierValue, context, callback) {
         'Accept-Encoding': 'gzip, deflate, compress'
     };
 
+    const data = {
+        password,
+        [identifierType]: identifierValue
+    }
+
     const axios = require('axios');
 
     let response;
     try {
-        response = await axios.get(`${API_URL}/${identifierValue}`, {headers});
+        response = await axios.post(API_URL, data, {headers});
     } catch (error) {
-        console.log(`error axios get, ${JSON.stringify(error)}`);
+        console.log(`error axios POST in login, ${JSON.stringify(error)}`);
         if (error.response) { // server responded with a status code out of the range of 2xx
             return callback(null);
         } else { // Something happened in setting up the request that triggered an Error
@@ -32,7 +38,6 @@ async function getUser(identifierValue, context, callback) {
     }
 
     if (response.status !== 200 || !response.data) {
-        console.log(`getUser result empty. no user found ${identifierType}: ${identifierValue}`)
         return callback(null);
     }
 
@@ -41,11 +46,12 @@ async function getUser(identifierValue, context, callback) {
 
     const profile = {[identifierType]: identifierValue, user_id: `${user_id}`};
 
-    console.log(`found user with ID: ${user_id}, identifierType: ${identifierType}, profile: ${JSON.stringify(profile)}`);
+    console.log(`login found user with ID: ${user_id}, identifierType: ${identifierType}, profile: ${JSON.stringify(profile)}`);
 
     if (!user_id) {
         return callback(null);
     }
 
     return callback(null, profile);
+
 }

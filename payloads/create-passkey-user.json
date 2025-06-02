@@ -1,0 +1,33 @@
+{
+  "client_id": "At5IQTvLVMhalbVc0WZ07iKUyJtpXmkJ",
+  "connection": "cf-import-off-d1",
+  "email": "u6@pk.email",
+  "passkey": {
+    "id": "NGiJSbWd8BxTE0Tt8WDj7-bksvUyE79o8wWXCFASezI",
+    "rawId": "NGiJSbWd8BxTE0Tt8WDj7-bksvUyE79o8wWXCFASezI",
+    "clientExtensionResults": {},
+    "type": "public-key",
+    "authenticatorAttachment": "platform",
+    "response": {
+      "attestationObject": "o2NmbXRmcGFja2VkZ2F0dFN0bXSiY2FsZyZjc2lnWEcwRQIhAMX7oA39TYqjsChG65A5mGXsV2VTTzQ3mG_e6qm_bS_4AiB45gHpEUnn4sZ_gCVYyuy03TSzSOkqnRcTCJG-aMsvP2hhdXRoRGF0YVik2LCQgMDsmj-mmyNSSmC6ykTBhBVSJYDApGrqN5z_KWlFAAAAALL1a6psHDo-NdG2Mf6zeioAIDRoiUm1nfAcUxNE7fFg4-_m5LL1MhO_aPMFlwhQEnsypQECAyYgASFYIA5c0y00Ywq_UqFwQZnuyZewv-8Zt_VaqWgnP0SMZ8bgIlgg0ZLa45RTY5h29HQHHElz_GOG-92r_iRvYU6U0e_zNlM",
+      "clientDataJSON": "eyJ0eXBlIjoid2ViYXV0aG4uY3JlYXRlIiwiY2hhbGxlbmdlIjoiUVM4ZkdiRmlISVppUFVlTzRqcERidmdZeDhCMXB3ZG90VjljUXI1bG5lUSIsIm9yaWdpbiI6Imh0dHBzOi8vaWQuYWJiYXNwb3VyLm5ldCJ9"
+    }
+  },
+  "passkeyContext": {
+    "challenge": "QS8fGbFiHIZiPUeO4jpDbvgYx8B1pwdotV9cQr5lneQ",
+    "userHandle": "4kam0WY-3JGN78tcMGD3DwrzAkM2XavlkbiY-l_mid5dlKbleYprG6IBO1H0a1HR8RLC_r8QLsHW9DiBoaIdyQ",
+    "expectedOrigin": []
+  },
+  "is_signup": true,
+  "tenant": "abbaspour",
+  "transaction": {
+    "id": "oauth2-webauthn",
+    "protocol": "oauth2-webauthn",
+    "requested_scopes": [],
+    "acr_values": [],
+    "ui_locales": []
+  },
+  "form": {},
+  "passkey_user_handle": "4kam0WY-3JGN78tcMGD3DwrzAkM2XavlkbiY-l_mid5dlKbleYprG6IBO1H0a1HR8RLC_r8QLsHW9DiBoaIdyQ",
+  "usePasskey": true
+}

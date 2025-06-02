@@ -53,6 +53,7 @@ wrangler d1 execute auth0_users --remote --command "DROP TABLE users"
 wrangler d1 execute auth0_users --remote --command "CREATE TABLE users (
   user_id INTEGER PRIMARY KEY AUTOINCREMENT,
   email TEXT,
+  password TEXT, 
   created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 )"
 ```
@@ -133,3 +134,9 @@ Add `API_TOKEN` and `API_BASE_URL` to Auth0 custom-db settings:
 - `tsconfig.json` - TypeScript configuration
 - `webpack.config.js` - Webpack bundling configuration
 - `Makefile` - Build and deployment automation
+- `custom-db/` - Auth0 custom database scripts
+- `tf/` - Terraform configuration for setting up Auth0 custom database
+
+## Terraform Setup
+
+This project includes Terraform configuration to set up an Auth0 custom database connection that points to the Cloudflare Worker. See the [Terraform README](./tf/README.md) for more information.

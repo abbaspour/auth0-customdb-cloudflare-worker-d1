@@ -4,3 +4,12 @@ node_modules
 dist
 package-lock.json
 .env
+
+# Terraform
+.terraform/
+.terraform.lock.hcl
+terraform.tfstate
+terraform.tfstate.backup
+*.tfvars
+!terraform.sample.tfvars
+*.plan
