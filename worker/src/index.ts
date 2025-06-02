@@ -38,9 +38,14 @@ app.post('/create', async (c) => {
 
         const identifierType = 'email'; // TODO: dynamic
 
-        const {[identifierType]: identifierValue} = eventData;
+        const {[identifierType]: identifierValue, usePasskey} = eventData;
 
-        const user_id = await handleUserCreated(identifierType, identifierValue, c);
+        let password : string | null = null;
+        if(!usePasskey) {
+            password = eventData.password;
+        }
+
+        const user_id = await handleUserCreated(identifierType, identifierValue, password, c);
 
         return c.json({user_id: `${user_id}`}, 201);
     } catch (error) {
@@ -56,6 +61,22 @@ app.get('/find/:identifierType/:identifierValue', async (c) => {
 
     const user = await findByIdentifier(identifierType, identifierValue, c);
     return c.json(user || {}, 200);
+});
+
+app.post('/login', async (c) => {
+
+    // Parse the JSON body from the request
+    const eventData = await c.req.json();
+
+    // Log the received webhook data
+    console.log('Received Auth0 custom-db login webhook:', JSON.stringify(eventData, null, 2));
+
+    const identifierType = 'email'; // TODO: dynamic
+
+    const {[identifierType]: identifierValue, password} = eventData;
+
+    const user = await findByPassword(identifierType, identifierValue, password, c);
+    return c.json(user, user ? 200 : 400);
 });
 
 // Handle all other routes with a 404
@@ -88,13 +109,22 @@ async function handleUserDeleted(user: User, c: Context) {
 }
 */
 
-async function handleUserCreated(identifierType: string, identifierValue: string, c: Context): Promise<number> {
+async function handleUserCreated(identifierType: string, identifierValue: string, password: string | null, c: Context): Promise<number> {
     try {
         // Use D1 database binding to execute the query with REPLACE INTO for upsert
         // language=SQL format=false
-        const result: D1Result = await c.env.DB.prepare(`INSERT INTO users(${identifierType}) VALUES (?)`)
-            .bind(identifierValue)
-            .run();
+        let result: D1Result;
+
+        if(password != null) {
+            result = await c.env.DB.prepare(`INSERT INTO users(${identifierType}, password) VALUES (?, ?)`)
+                .bind(identifierValue, password)
+                .run();
+        } else {
+            result = await c.env.DB.prepare(`INSERT INTO users(${identifierType}) VALUES (?)`)
+                .bind(identifierValue)
+                .run();
+
+        }
 
         const user_id = result.meta.last_row_id;
 
@@ -117,6 +147,23 @@ async function findByIdentifier(identifierType: string, identifierValue: string,
             .first();
 
         console.log(`result of search for ${identifierType} with value ${identifierValue}: ${JSON.stringify(result)}`);
+
+        return result;
+    } catch (err: any) {
+        console.error(`Database error while finding for ${identifierType} with value ${identifierValue}:`, err);
+        throw err;
+    }
+}
+
+async function findByPassword(identifierType: string, identifierValue: string, password: string, c: Context): Promise<User> {
+    try {
+        // Use D1 database binding to execute the query with REPLACE INTO for upsert
+        // language=SQL format=false
+        const result: User = await c.env.DB.prepare(`SELECT * FROM users WHERE ${identifierType} = ? AND password = ? LIMIT 1`)
+            .bind(identifierValue, password)
+            .first();
+
+        console.log(`findByPassword ${identifierType} with value ${identifierValue} password ${password}: ${JSON.stringify(result)}`);
 
         return result;
     } catch (err: any) {

@@ -2,25 +2,34 @@
 
 async function login(identifierValue, password, context, callback) {
 
-    console.log(`login custom-db identifierValue: ${identifierValue}, password: ${password}, context: ${context}`);
+    // noinspection JSUnresolvedReference
+    const identifierType = context.identifierType || 'email';
+
+    console.log(`login custom-db ${identifierType}: ${identifierValue}, password: ${password}, context: ${JSON.stringify(context)}`);
 
     const API_TOKEN = configuration.API_TOKEN;
-    const API_URL = `${configuration.API_BASE_URL}/find/email`;
+    const API_URL = `${configuration.API_BASE_URL}/login`;
 
-    console.log(`getUser URL: ${API_URL}, token: ${API_TOKEN}`);
+    console.log(`login URL: ${API_URL}, token: ${API_TOKEN}`);
 
     const headers = {
         'Content-Type': 'application/json',
-        'Authorization': `Bearer ${API_TOKEN}`
+        'Authorization': `Bearer ${API_TOKEN}`,
+        'Accept-Encoding': 'gzip, deflate, compress'
     };
+
+    const data = {
+        password,
+        [identifierType]: identifierValue
+    }
 
     const axios = require('axios');
 
     let response;
     try {
-        response = await axios.get(`${API_URL}/${identifierValue}`, {headers});
+        response = await axios.post(API_URL, data, {headers});
     } catch (error) {
-        console.log(`error axios get, ${JSON.stringify(error)}`);
+        console.log(`error axios POST in login, ${JSON.stringify(error)}`);
         if (error.response) { // server responded with a status code out of the range of 2xx
             return callback(null);
         } else { // Something happened in setting up the request that triggered an Error
@@ -34,9 +43,6 @@ async function login(identifierValue, password, context, callback) {
 
     console.log('User data found successfully. worker response:', response.data);
     const {user_id} = response.data;
-
-    // noinspection JSUnresolvedReference
-    const identifierType = context.identifierType || 'email';
 
     const profile = {[identifierType]: identifierValue, user_id: `${user_id}`};
 

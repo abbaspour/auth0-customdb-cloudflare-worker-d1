@@ -3,6 +3,8 @@ all: build
 build:
 	npm run build
 
+apply: deploy
+
 deploy:
 	npm run deploy
 

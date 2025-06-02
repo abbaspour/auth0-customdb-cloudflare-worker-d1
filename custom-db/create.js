@@ -24,7 +24,7 @@ async function create(user, context, callback) {
     try {
         response = await axios.post(API_URL, user, { headers });
     } catch (error) {
-        console.log(`error axios post, ${JSON.stringify(error)}`);
+        console.log(`error axios POST in create, ${JSON.stringify(error)}`);
         return callback(error);
     }
 

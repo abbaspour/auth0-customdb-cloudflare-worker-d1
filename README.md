@@ -53,6 +53,7 @@ wrangler d1 execute auth0_users --remote --command "DROP TABLE users"
 wrangler d1 execute auth0_users --remote --command "CREATE TABLE users (
   user_id INTEGER PRIMARY KEY AUTOINCREMENT,
   email TEXT,
+  password TEXT, 
   created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 )"
 ```
