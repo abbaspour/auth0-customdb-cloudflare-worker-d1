@@ -36,9 +36,11 @@ app.post('/create', async (c) => {
         // Log the received webhook data
         console.log('Received Auth0 custom-db create webhook:', JSON.stringify(eventData, null, 2));
 
-        const {email} = eventData;
+        const identifierType = 'email'; // TODO: dynamic
 
-        const user_id = await handleUserCreated(email, c);
+        const {[identifierType]: identifierValue} = eventData;
+
+        const user_id = await handleUserCreated(identifierType, identifierValue, c);
 
         return c.json({user_id: `${user_id}`}, 201);
     } catch (error) {
@@ -47,12 +49,12 @@ app.post('/create', async (c) => {
     }
 });
 
-app.get('/find/email/:email', async (c) => {
-    const {email} = c.req.param();
+app.get('/find/:identifierType/:identifierValue', async (c) => {
+    const {identifierType, identifierValue} = c.req.param();
 
-    console.log('Received Auth0 custom-db find by email webhook:', email);
+    console.log(`Received Auth0 custom-db find by identifier ${identifierType}: ${identifierValue}`);
 
-    const user = await findByEmail(email, c);
+    const user = await findByIdentifier(identifierType, identifierValue, c);
     return c.json(user || {}, 200);
 });
 
@@ -86,41 +88,39 @@ async function handleUserDeleted(user: User, c: Context) {
 }
 */
 
-async function handleUserCreated(email: string, c: Context): Promise<number> {
+async function handleUserCreated(identifierType: string, identifierValue: string, c: Context): Promise<number> {
     try {
         // Use D1 database binding to execute the query with REPLACE INTO for upsert
         // language=SQL format=false
-        const result: D1Result = await c.env.DB.prepare('INSERT INTO users (email) VALUES (?)')
-            .bind(
-                email || null
-            )
+        const result: D1Result = await c.env.DB.prepare(`INSERT INTO users(${identifierType}) VALUES (?)`)
+            .bind(identifierValue)
             .run();
 
         const user_id = result.meta.last_row_id;
 
-        console.log(`User ${user_id} successfully inserted into database.`);
+        console.log(`User ${identifierType}/${identifierValue} successfully inserted into database with user_id: ${user_id}`);
 
         return user_id;
     } catch (err: any) {
-        console.error(`Database error while inserting user=${email}:`, err);
+        console.error(`Database error while inserting user ${identifierType}/${identifierValue}`, err);
         throw err;
     }
 }
 
 
-async function findByEmail(email: string, c: Context): Promise<User> {
+async function findByIdentifier(identifierType: string, identifierValue: string, c: Context): Promise<User> {
     try {
         // Use D1 database binding to execute the query with REPLACE INTO for upsert
         // language=SQL format=false
-        const result: User = await c.env.DB.prepare('SELECT * FROM users WHERE email = ? LIMIT 1')
-            .bind(email)
+        const result: User = await c.env.DB.prepare(`SELECT * FROM users WHERE ${identifierType} = ? LIMIT 1`)
+            .bind(identifierValue)
             .first();
 
-        console.log(`result of search for email ${email}: ${JSON.stringify(result)}`);
+        console.log(`result of search for ${identifierType} with value ${identifierValue}: ${JSON.stringify(result)}`);
 
         return result;
     } catch (err: any) {
-        console.error(`Database error while finding user=${email}:`, err);
+        console.error(`Database error while finding for ${identifierType} with value ${identifierValue}:`, err);
         throw err;
     }
 }

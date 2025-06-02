@@ -2,6 +2,10 @@
 // noinspection DuplicatedCode
 
 async function create(user, context, callback) {
+
+    // noinspection JSUnresolvedReference
+    const identifierType = context.identifierType || 'email';
+
     console.log(`create custom-db user: ${JSON.stringify(user)}, context: ${JSON.stringify(context)}`);
 
     const API_TOKEN= configuration.API_TOKEN;
@@ -32,8 +36,6 @@ async function create(user, context, callback) {
 
     const { user_id } = response.data;
 
-    // noinspection JSUnresolvedReference
-    const identifierType = context.identifierType || 'email';
 
     console.log(`Stored user with ID: ${user_id}, identifierType: ${identifierType}, user[${identifierType}]: ${user[identifierType]}`);
 

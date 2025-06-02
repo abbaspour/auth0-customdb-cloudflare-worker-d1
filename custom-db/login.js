@@ -1,20 +1,17 @@
-// noinspection JSUnresolvedReference,DuplicatedCode
+// noinspection DuplicatedCode
 
-async function getUser(identifierValue, context, callback) {
-    // noinspection JSUnresolvedReference
-    const identifierType = context.identifierType || 'email';
+async function login(identifierValue, password, context, callback) {
 
-    console.log(`getUser ${identifierType}: ${identifierValue}, context: ${JSON.stringify(context)}`);
+    console.log(`login custom-db identifierValue: ${identifierValue}, password: ${password}, context: ${context}`);
 
     const API_TOKEN = configuration.API_TOKEN;
-    const API_URL = `${configuration.API_BASE_URL}/find/${identifierType}`;
+    const API_URL = `${configuration.API_BASE_URL}/find/email`;
 
-    //console.log(`getUser URL: ${API_URL}, token: ${API_TOKEN}`);
+    console.log(`getUser URL: ${API_URL}, token: ${API_TOKEN}`);
 
     const headers = {
         'Content-Type': 'application/json',
-        'Authorization': `Bearer ${API_TOKEN}`,
-        'Accept-Encoding': 'gzip, deflate, compress'
+        'Authorization': `Bearer ${API_TOKEN}`
     };
 
     const axios = require('axios');
@@ -32,20 +29,23 @@ async function getUser(identifierValue, context, callback) {
     }
 
     if (response.status !== 200 || !response.data) {
-        console.log(`getUser result empty. no user found ${identifierType}: ${identifierValue}`)
         return callback(null);
     }
 
     console.log('User data found successfully. worker response:', response.data);
     const {user_id} = response.data;
 
+    // noinspection JSUnresolvedReference
+    const identifierType = context.identifierType || 'email';
+
     const profile = {[identifierType]: identifierValue, user_id: `${user_id}`};
 
-    console.log(`found user with ID: ${user_id}, identifierType: ${identifierType}, profile: ${JSON.stringify(profile)}`);
+    console.log(`login found user with ID: ${user_id}, identifierType: ${identifierType}, profile: ${JSON.stringify(profile)}`);
 
     if (!user_id) {
         return callback(null);
     }
 
     return callback(null, profile);
+
 }
