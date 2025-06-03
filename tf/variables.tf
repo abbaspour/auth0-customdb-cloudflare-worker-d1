@@ -1,3 +1,4 @@
+# auth0
 variable "auth0_domain" {
   description = "Auth0 domain"
   type        = string
@@ -23,4 +24,21 @@ variable "api_token" {
   description = "API token for authenticating with the Cloudflare Worker"
   type        = string
   sensitive   = true
+}
+
+# cloudflare
+variable "cloudflare_api_token" {
+  description = "Your Cloudflare API Token"
+  type        = string
+  sensitive   = true
+}
+
+variable "cloudflare_email" {
+  type = string
+  description = "Cloudflare account email"
+}
+
+variable "cloudflare_account_id" {
+  type = string
+  description = "Cloudflare account ID"
 }

@@ -1,5 +1,4 @@
-// noinspection DuplicatedCode
-
+// noinspection DuplicatedCode,JSUnusedGlobalSymbols
 async function login(identifierValue, password, context, callback) {
 
     // noinspection JSUnresolvedReference
@@ -10,7 +9,7 @@ async function login(identifierValue, password, context, callback) {
     const API_TOKEN = configuration.API_TOKEN;
     const API_URL = `${configuration.API_BASE_URL}/login`;
 
-    console.log(`login URL: ${API_URL}, token: ${API_TOKEN}`);
+    //console.log(`login URL: ${API_URL}, token: ${API_TOKEN}`);
 
     const headers = {
         'Content-Type': 'application/json',
@@ -41,16 +40,15 @@ async function login(identifierValue, password, context, callback) {
         return callback(null);
     }
 
-    console.log('User data found successfully. worker response:', response.data);
-    const {user_id} = response.data;
+    console.log('login worker response:', response.data);
+    const profile = response.data;
 
-    const profile = {[identifierType]: identifierValue, user_id: `${user_id}`};
-
-    console.log(`login found user with ID: ${user_id}, identifierType: ${identifierType}, profile: ${JSON.stringify(profile)}`);
-
-    if (!user_id) {
+    if (!profile.user_id) {
+        console.log(`login failed. no user_id for ${identifierType}: ${identifierType} with password: ${password}`);
         return callback(null);
     }
+
+    console.log(`login found user with ${identifierType}: ${identifierType}, profile: ${JSON.stringify(profile)}`);
 
     return callback(null, profile);
 
