@@ -1,10 +1,10 @@
-// noinspection JSUnresolvedReference,DuplicatedCode
+// noinspection DuplicatedCode,JSUnusedGlobalSymbols
 
 async function getUser(identifierValue, context, callback) {
     // noinspection JSUnresolvedReference
     const identifierType = context.identifierType || 'email';
 
-    console.log(`getUser ${identifierType}: ${identifierValue}, context: ${JSON.stringify(context)}`);
+    console.log(`invoked getUser ${identifierType}: ${identifierValue}, context: ${JSON.stringify(context)}`);
 
     const API_TOKEN = configuration.API_TOKEN;
     const API_URL = `${configuration.API_BASE_URL}/find/${identifierType}`;
@@ -36,16 +36,14 @@ async function getUser(identifierValue, context, callback) {
         return callback(null);
     }
 
-    console.log('User data found successfully. worker response:', response.data);
-    const {user_id} = response.data;
+    const profile = response.data;
 
-    const profile = {[identifierType]: identifierValue, user_id: `${user_id}`};
-
-    console.log(`found user with ID: ${user_id}, identifierType: ${identifierType}, profile: ${JSON.stringify(profile)}`);
-
-    if (!user_id) {
+    if (!profile.user_id) {
+        console.log(`no user found ${identifierType}: ${identifierValue}`);
         return callback(null);
     }
+
+    console.log(`found user ${identifierType}: ${identifierValue}, profile: ${JSON.stringify(profile)}`);
 
     return callback(null, profile);
 }

@@ -51,7 +51,7 @@ Copy the UUID (e.g., `12345678-1234-1234-1234-123456789abc`) and replace the `da
 ```bash
 wrangler d1 execute auth0_users --remote --command "DROP TABLE users"
 wrangler d1 execute auth0_users --remote --command "CREATE TABLE users (
-  user_id INTEGER PRIMARY KEY AUTOINCREMENT,
+  user_id TEXT PRIMARY KEY,
   email TEXT,
   password TEXT, 
   created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP

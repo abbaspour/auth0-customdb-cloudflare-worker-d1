@@ -8,7 +8,7 @@ command = "npm run build"
 [[d1_databases]]
 binding = "DB"
 database_name = "auth0_users"
-database_id = "29a90f38-5b25-4362-9c15-6f5349ef4691" # update to your database ID after `wrangler d1 create auth0_users`
+database_id = "49aec7c8-157c-4a7c-a911-5a7f19223cfd" # update to your database ID after `wrangler d1 create auth0_users`
 
 [observability]
 enabled = true

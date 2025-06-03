@@ -10,6 +10,7 @@ package-lock.json
 .terraform.lock.hcl
 terraform.tfstate
 terraform.tfstate.backup
+terraform.tfstate.*.backup
 *.tfvars
 !terraform.sample.tfvars
 *.plan

@@ -1,6 +1,4 @@
-// noinspection JSUnusedLocalSymbols
-// noinspection DuplicatedCode
-
+// noinspection DuplicatedCode,JSUnusedGlobalSymbols
 async function create(user, context, callback) {
 
     // noinspection JSUnresolvedReference
@@ -11,7 +9,7 @@ async function create(user, context, callback) {
     const API_TOKEN= configuration.API_TOKEN;
     const API_URL = `${configuration.API_BASE_URL}/create`;
 
-    console.log(`create URL: ${API_URL}, token: ${API_TOKEN}`);
+    //console.log(`create URL: ${API_URL}, token: ${API_TOKEN}`);
 
     const headers = {
         'Content-Type': 'application/json',
@@ -32,14 +30,12 @@ async function create(user, context, callback) {
         return callback(`Failed to store user data. Status: ${response.status}. Message: ${response.data.message || 'Unknown error.'}`);
     }
 
-    console.log('User data stored successfully. worker response:', response.data);
+    //console.log('User data stored successfully. worker response:', response.data);
 
-    const { user_id } = response.data;
+    //const { user_id } = response.data;
+    const profile = { ...response.data, id: `cf-cdb|${response.data.user_id}`};
 
-
-    console.log(`Stored user with ID: ${user_id}, identifierType: ${identifierType}, user[${identifierType}]: ${user[identifierType]}`);
-
-    const profile = {'email': user.email, user_id: user_id};
+    console.log(`Stored user[${identifierType}]: ${user[identifierType]}, profile: ${JSON.stringify(profile)}`);
 
     return callback(null, profile);
 }
