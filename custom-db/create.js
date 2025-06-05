@@ -33,7 +33,7 @@ async function create(user, context, callback) {
     //console.log('User data stored successfully. worker response:', response.data);
 
     //const { user_id } = response.data;
-    const profile = { ...response.data, id: `cf-cdb|${response.data.user_id}`};
+    const profile = { ...response.data };
 
     console.log(`Stored user[${identifierType}]: ${user[identifierType]}, profile: ${JSON.stringify(profile)}`);
 
